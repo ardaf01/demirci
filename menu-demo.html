@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARFCODE QR Menu - L'Atelier Gastronomique</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+  <style>
+    :root {
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-serif: 'Playfair Display', serif;
+      --bg: #111216;
+      --surface: #191a20;
+      --surface-light: #22242b;
+      --border: rgba(255, 255, 255, 0.05);
+      --border-md: rgba(255, 255, 255, 0.1);
+      --accent: #c5a880; /* Brass/Gold Accent */
+      --accent-dark: #b3956d;
+      --accent-light: #dfcaa7;
+      --text-h: #ffffff;
+      --text-body: #a0a5b5;
+      --text-muted: #626575;
+      --white: #ffffff;
+      --green: #c5a880;
+      --red: #ef4444;
+      --r-lg: 20px;
+      --r-md: 12px;
+      --r-sm: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0; padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-body);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding-bottom: 110px;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 60px 20px 24px;
+    }
+
+    /* Floating Mode Switcher */
+    .mode-switcher {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: rgba(25, 26, 32, 0.9);
+      border: 1px solid var(--accent);
+      border-radius: 30px;
+      padding: 4px;
+      display: flex;
+      gap: 4px;
+      z-index: 10000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+    }
+    .mode-btn {
+      background: none;
+      border: none;
+      color: var(--text-body);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .mode-btn.active {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 800;
+    }
+
+    /* Layout Sections */
+    .view-section {
+      display: none;
+    }
+    .view-section.active {
+      display: block;
+    }
+
+    /* Elegant Top Bar */
+    header {
+      background: linear-gradient(rgba(17,17,17,0.75), rgba(17,17,17,0.75)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80');
+      background-size: cover;
+      background-position: center;
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 48px 24px;
+      text-align: center;
+      margin-bottom: 28px;
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .header-logo {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-h);
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+    .header-logo span {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 400;
+    }
+    .header-desc {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .table-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface-light);
+      border: 1px solid var(--border-md);
+      color: var(--white);
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 30px;
+    }
+    .table-badge span {
+      width: 6px;
+      height: 6px;
+      background: #10b981;
+      border-radius: 50%;
+    }
+
+    /* Categories Selector */
+    .categories {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 28px;
+      scroll-behavior: smooth;
+    }
+    .categories::-webkit-scrollbar {
+      display: none;
+    }
+    .category-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-body);
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .category-chip.active {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: transparent;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(197, 168, 128, 0.25);
+    }
+
+    /* Section Label */
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      color: var(--text-h);
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    /* Menu Cards */
+    .menu-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .menu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .menu-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .menu-visual-wrapper {
+      position: relative;
+      width: 100%;
+      height: 170px;
+      background: var(--surface-light);
+      overflow: hidden;
+    }
+    .menu-visual-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .menu-card:hover .menu-visual-wrapper img {
+      transform: scale(1.04);
+    }
+    .menu-details {
+      padding: 18px;
+    }
+    .menu-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .menu-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-h);
+    }
+    .menu-price {
+      font-family: var(--font-serif);
+      font-size: 1.05rem;
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .menu-desc {
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+    .menu-action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .quantity-control {
+      display: flex;
+      align-items: center;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px;
+    }
+    .quantity-btn {
+      background: none;
+      border: none;
+      color: var(--white);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .quantity-btn:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .quantity-val {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--white);
+      width: 24px;
+      text-align: center;
+    }
+    .add-btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .add-btn:hover {
+      background: var(--accent-light);
+      box-shadow: 0 4px 12px rgba(197, 168, 128, 0.25);
+    }
+
+    /* Floating Action Bar */
+    .action-bar {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 40px);
+      max-width: 420px;
+      background: rgba(25, 26, 32, 0.85);
+      border: 1px solid var(--border-md);
+      backdrop-filter: blur(20px);
+      border-radius: 40px;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 999;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--text-body);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.65rem;
+      font-weight: 700;
+      gap: 4px;
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 6px 12px;
+    }
+    .action-btn:hover {
+      color: var(--accent);
+    }
+    .cart-trigger {
+      background: var(--accent);
+      color: var(--bg);
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .cart-trigger:hover {
+      background: var(--accent-light);
+      box-shadow: 0 4px 15px rgba(197, 168, 128, 0.3);
+    }
+    .cart-badge {
+      background: var(--white);
+      color: var(--bg);
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 10px;
+      margin-left: 2px;
+    }
+
+    /* Cart Drawer */
+    .cart-drawer {
+      position: fixed;
+      bottom: 0; left: 50%;
+      transform: translate(-50%, 100%);
+      width: 100%;
+      max-width: 460px;
+      background: var(--bg);
+      border-top: 1.5px solid var(--accent);
+      border-radius: 24px 24px 0 0;
+      padding: 24px;
+      z-index: 1000;
+      box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .cart-drawer.open {
+      transform: translate(-50%, 0);
+    }
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .drawer-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: var(--text-h);
+      font-weight: 800;
+    }
+    .drawer-close {
+      background: none;
+      border: none;
+      color: var(--text-body);
+      cursor: pointer;
+    }
+    
+    /* Cart Items list scrollable area */
+    .cart-items-list {
+      max-height: 180px;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .cart-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cart-item-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .cart-item-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-item-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-h);
+    }
+    .cart-item-qty {
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-top: 2px;
+    }
+    .cart-item-price {
+      font-size: 0.85rem;
+      color: var(--white);
+      font-weight: 700;
+    }
+    
+    /* Itemized exclusion/note input */
+    .cart-item-note-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .cart-item-note-input {
+      flex: 1;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 6px 10px;
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      color: var(--white);
+      outline: none;
+    }
+    .cart-item-note-input:focus {
+      border-color: var(--accent);
+    }
+
+    /* Cart Special Note Area */
+    .cart-note-area {
+      margin-bottom: 18px;
+    }
+    .cart-note-area label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .cart-note-area textarea {
+      width: 100%;
+      height: 52px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 8px 12px;
+      font-family: var(--font-sans);
+      font-size: 0.78rem;
+      color: var(--white);
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .cart-note-area textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .cart-summary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      border-radius: var(--r-md);
+      margin-bottom: 18px;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-bottom: 6px;
+      color: var(--text-body);
+    }
+    .summary-row.total {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--text-h);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      margin-bottom: 0;
+    }
+    .checkout-btn {
+      width: 100%;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 14px;
+      border-radius: var(--r-md);
+      font-size: 0.88rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .checkout-btn:hover {
+      background: var(--accent-light);
+    }
+
+    /* RESTAURANT OWNER ADMIN PANEL STYLE */
+    .admin-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 70px 24px 40px;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+    .admin-title h2 {
+      font-family: var(--font-serif);
+      font-size: 1.8rem;
+      color: var(--text-h);
+    }
+    .admin-title p {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    @media (min-width: 768px) {
+      .admin-grid {
+        grid-template-columns: 1.2fr 1.8fr;
+      }
+    }
+
+    .admin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg);
+      padding: 24px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+      height: fit-content;
+    }
+    .admin-card-title {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      color: var(--text-h);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-body);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .form-control {
+      width: 100%;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 10px 14px;
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      color: var(--white);
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+    }
+    textarea.form-control {
+      height: 70px;
+      resize: none;
+    }
+    
+    /* Photo Upload Area */
+    .upload-box {
+      border: 1.5px dashed var(--border-md);
+      background: var(--surface-light);
+      border-radius: var(--r-md);
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upload-box:hover {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.01);
+    }
+    .upload-box input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .upload-preview {
+      width: 100%;
+      height: 120px;
+      background: var(--bg);
+      border-radius: var(--r-sm);
+      margin-top: 10px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .upload-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Admin Products List Table */
+    .admin-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .admin-items-table th, .admin-items-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-items-table th {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+    .admin-items-table td {
+      font-size: 0.8rem;
+    }
+    .table-prod-img {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--r-sm);
+      object-fit: cover;
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+    }
+    .table-action-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+    .table-action-btn:hover {
+      color: var(--red);
+    }
+
+    /* Live Orders / Calls Alerts section */
+    .live-feed-card {
+      grid-column: 1 / -1;
+    }
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+    .feed-item {
+      background: var(--surface-light);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: var(--r-md);
+      padding: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .feed-item.call-alert {
+      border-left-color: #3b82f6; /* Blue for call alerts */
+    }
+    .feed-item.completed {
+      opacity: 0.5;
+      border-left-color: var(--text-muted);
+    }
+    .feed-details h4 {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .feed-details p {
+      font-size: 0.78rem;
+      color: var(--text-body);
+      line-height: 1.4;
+    }
+    .feed-time {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      display: block;
+    }
+    .feed-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .feed-btn {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .feed-btn.decline {
+      background: none;
+      border: 1px solid var(--border-md);
+      color: var(--text-body);
+    }
+
+    /* Premium AI Upsell Modal & Notifications */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(4px);
+      z-index: 1010;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .upsell-modal {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--r-lg);
+      padding: 32px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+      animation: modalFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .upsell-badge {
+      display: inline-block;
+      background: rgba(197, 168, 128, 0.1);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .upsell-title {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      color: var(--text-h);
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .upsell-desc {
+      font-size: 0.8rem;
+      color: var(--text-body);
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .upsell-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .upsell-btn-accept {
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      padding: 12px;
+      border-radius: var(--r-md);
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upsell-btn-accept:hover {
+      background: var(--accent-light);
+    }
+    .upsell-btn-decline {
+      background: none;
+      border: 1px solid var(--border-md);
+      color: var(--text-body);
+      padding: 10px;
+      border-radius: var(--r-md);
+      font-size: 0.80rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upsell-btn-decline:hover {
+      background: rgba(255,255,255,0.02);
+    }
+
+    /* Notification Toast */
+    .notification {
+      position: fixed;
+      top: 24px; left: 50%;
+      transform: translateX(-50%) translateY(-100px);
+      background: var(--surface-light);
+      border: 1px solid var(--accent);
+      border-radius: var(--r-md);
+      padding: 14px 20px;
+      font-size: 0.82rem;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 2000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .notification.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    .notification i {
+      color: var(--accent);
+    }
+
+    .backdrop-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 998;
+      display: none;
+      backdrop-filter: blur(4px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Switcher Mode Trigger -->
+  <div class="mode-switcher">
+    <button class="mode-btn active" id="btn-mode-customer"><i data-feather="smartphone" style="width:13px; height:13px;"></i> Müşteri Ekranı</button>
+    <button class="mode-btn" id="btn-mode-admin"><i data-feather="sliders" style="width:13px; height:13px;"></i> Yönetici Paneli</button>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="notification" class="notification">
+    <i data-feather="bell"></i>
+    <span id="notification-text">Sipariş başarıyla iletildi!</span>
+  </div>
+
+  <!-- AI Suggestion Modal -->
+  <div id="upsell-modal" class="modal-overlay">
+    <div class="upsell-modal">
+      <span class="upsell-badge">AI Şef Tavsiyesi</span>
+      <div class="upsell-title">Menünüzü Tamamlayın</div>
+      <div class="upsell-desc">Seçtiğiniz burgerin yanına parmesanlı & trüflü patates kızartması ve soğuk ev yapımı çilekli limonata ekleyerek menünüzü taçlandırmak ister misiniz? (+60 ₺)</div>
+      <div class="upsell-buttons">
+        <button id="upsell-accept" class="upsell-btn-accept">Önerilen Menüyü Ekle</button>
+        <button id="upsell-decline" class="upsell-btn-decline">Sadece Seçimimi Ekle</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="backdrop" class="backdrop-overlay"></div>
+
+  <!-- ==========================================================================
+       CUSTOMER VIEW SECTION
+       ========================================================================== -->
+  <div class="view-section active" id="sec-customer-view">
+    <div class="container">
+      <!-- Header -->
+      <header>
+        <div class="header-desc">L'Atelier de Gusto</div>
+        <div class="header-logo">Bistro<span>Modern</span></div>
+        <div class="table-badge"><span></span> Masa 04</div>
+      </header>
+
+      <!-- Categories selector -->
+      <div class="categories" id="cust-categories-bar">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Section Title -->
+      <div class="section-title">Haftalık Gastronomi Seçkisi</div>
+
+      <!-- Items Listing -->
+      <div class="menu-grid" id="menu-items-container">
+        <!-- Items generated dynamically -->
+      </div>
+    </div>
+
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cart-drawer">
+      <div class="drawer-header">
+        <span class="drawer-title">Sepetiniz (Masa 04)</span>
+        <button class="drawer-close" id="cart-close-btn"><i data-feather="x"></i></button>
+      </div>
+      
+      <!-- Items scroll container -->
+      <div class="cart-items-list" id="cart-items-list">
+        <!-- Cart items here -->
+      </div>
+      
+      <!-- Sipariş Notu Ekleme Kutusu -->
+      <div class="cart-note-area">
+        <label for="order-note">Global Masa Notu</label>
+        <textarea id="order-note" placeholder="Tüm sipariş için ortak mutfak notu (Örn: Servis hızlı olsun...)"></textarea>
+      </div>
+
+      <div class="cart-summary">
+        <div class="summary-row">
+          <span>Ara Toplam</span>
+          <span id="subtotal-val">0 ₺</span>
+        </div>
+        <div class="summary-row">
+          <span>Servis Bedeli</span>
+          <span>0 ₺</span>
+        </div>
+        <div class="summary-row total">
+          <span>Genel Toplam</span>
+          <span id="total-val">0 ₺</span>
+        </div>
+      </div>
+      <button class="checkout-btn" id="send-order-btn">
+        <i data-feather="check"></i> Siparişi Mutfak API'sine Gönder
+      </button>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <button class="action-btn" id="btn-call-waiter">
+        <i data-feather="bell"></i> Garson Çağır
+      </button>
+      <button class="cart-trigger" id="cart-trigger-btn">
+        <i data-feather="shopping-bag"></i> Sepetim
+        <span class="cart-badge" id="cart-counter">0</span>
+      </button>
+      <button class="action-btn" id="btn-request-bill">
+        <i data-feather="credit-card"></i> Hesap İste
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       ADMIN CONTROL PANEL SECTION
+       ========================================================================== -->
+  <div class="view-section" id="sec-admin-view">
+    <div class="admin-container">
+      
+      <div class="admin-header">
+        <div class="admin-title">
+          <h2>Bistro Control Center</h2>
+          <p>ARFCODE Smart Restaurant Asistan Yönetici Portalı</p>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); text-align: right;">
+          Masa Sayısı: <strong>16</strong> | Durum: <strong style="color:var(--green)">Aktif (AWS Cloud)</strong>
+        </div>
+      </div>
+
+      <div class="admin-grid">
+        
+        <!-- Add New Product Card -->
+        <div class="admin-card">
+          <div class="admin-card-title"><i data-feather="plus-circle" style="color:var(--accent);"></i> Yeni Ürün Ekle</div>
+          
+          <form id="admin-add-form">
+            <div class="form-group">
+              <label>Ürün Adı</label>
+              <input type="text" id="add-prod-name" class="form-control" placeholder="Örn: Trüflü Patates Pizza" required>
+            </div>
+            
+            <div class="form-group">
+              <label>Kategori</label>
+              <select id="add-prod-category" class="form-control" required>
+                <option value="starter">🥗 Başlangıçlar</option>
+                <option value="main">🥩 Ana Yemekler</option>
+                <option value="pasta">🍝 Pizza & Makarna</option>
+                <option value="burger">🍔 Gurme Burgerler</option>
+                <option value="dessert">🍰 Tatlılar</option>
+                <option value="drink">🥤 İçecekler</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Fiyat (₺)</label>
+              <input type="number" id="add-prod-price" class="form-control" placeholder="Örn: 180" required>
+            </div>
+
+            <div class="form-group">
+              <label>Açıklama</label>
+              <textarea id="add-prod-desc" class="form-control" placeholder="Malzemeler, porsiyon bilgisi vb..." required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Ürün Fotoğrafı Yükle</label>
+              <div class="upload-box">
+                <i data-feather="image" style="width:24px; height:24px; color:var(--text-muted); margin-bottom:4px;"></i>
+                <p style="font-size:0.7rem; color:var(--text-body);">Sürükle bırak veya tıklayıp dosya seçin</p>
+                <input type="file" id="add-prod-file" accept="image/*">
+                <div class="upload-preview" id="add-prod-preview">
+                  <img src="" alt="Preview">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="checkout-btn" style="margin-top:10px;"><i data-feather="save"></i> Kaydet ve Menüye Ekle</button>
+          </form>
+        </div>
+
+        <!-- Menu Management & Product List Table -->
+        <div class="admin-card">
+          <div class="admin-card-title"><i data-feather="list" style="color:var(--accent);"></i> Aktif Menü Yönetimi</div>
+          
+          <div style="overflow-x: auto; max-height: 520px;">
+            <table class="admin-items-table">
+              <thead>
+                <tr>
+                  <th>Görsel</th>
+                  <th>Ürün Adı</th>
+                  <th>Kategori</th>
+                  <th>Fiyat</th>
+                  <th>Aksiyon</th>
+                </tr>
+              </thead>
+              <tbody id="admin-table-body">
+                <!-- Loaded dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Live Orders & Call alerts Display Board -->
+        <div class="admin-card live-feed-card">
+          <div class="admin-card-title" style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <i data-feather="bell" style="color:var(--accent);"></i> Gelen Canlı Siparişler & Çağrılar
+            </div>
+            <span style="font-size:0.65rem; background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#10b981; padding:4px 10px; border-radius:12px; font-weight:800; animation: pulse 2s infinite;">CANLI İZLEME PANELİ</span>
+          </div>
+          
+          <div class="feed-list" id="admin-orders-feed">
+            <!-- Order feeds logged dynamically -->
+            <div style="text-align:center; padding:32px 0; color:var(--text-muted);" id="feed-empty-msg">
+              <i data-feather="check-circle" style="width:36px; height:36px; stroke-width:1; margin-bottom:8px;"></i>
+              <p style="font-size:0.8rem;">Şu an bekleyen aktif sipariş veya çağrı bulunmuyor.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // A-to-Z Default Luxury Restaurant Menu Database
+    const defaultProducts = [
+      // 🥗 Appetizers & Starters
+      { 
+        id: 201, 
+        name: 'Füme Burrata Salatası', 
+        desc: 'Taze burrata peyniri, renkli çeri domatesler, yabani roka, ev yapımı fesleğen pesto ve balzamik glaze eşliğinde.', 
+        price: 185, 
+        img: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=400&q=80', 
+        category: 'starter' 
+      },
+      { 
+        id: 202, 
+        name: 'Altın Çıtır Kalamar Tava', 
+        desc: 'Özel marine edilmiş çıtır kalamar halkaları, kurutulmuş otlu ev yapımı tartar sosu ve taze limon dilimi ile.', 
+        price: 220, 
+        img: 'https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=400&q=80', 
+        category: 'starter' 
+      },
+      { 
+        id: 203, 
+        name: 'Pastırmalı Sıcak Humus', 
+        desc: 'Közlenmiş nohut püresi, tahin, tereyağında hafif sotelenmiş Kayseri pastırması ve çam fıstığı ile sıcak servis.', 
+        price: 140, 
+        img: 'https://images.unsplash.com/photo-1624462966581-bc6d768cbce5?auto=format&fit=crop&w=400&q=80', 
+        category: 'starter' 
+      },
+
+      // 🥩 Main Courses
+      { 
+        id: 301, 
+        name: 'Izgara Dry-Aged Antrikot', 
+        desc: '28 gün dinlendirilmiş 220g antrikot, trüflü patates püresi, ızgara kuşkonmaz ve özel şef demi-glace sosu ile.', 
+        price: 480, 
+        img: 'images/menu_antrikot.png', 
+        category: 'main' 
+      },
+      { 
+        id: 302, 
+        name: 'Fırınlanmış Norveç Somonu', 
+        desc: 'Taze rezene, baby patates, çeri domates ve kapari eşliğinde kağıtta ağır ateşte fırınlanmış somon fileto.', 
+        price: 410, 
+        img: 'images/menu_somon.png', 
+        category: 'main' 
+      },
+      { 
+        id: 303, 
+        name: 'Ağır Ateşte Kuzu İncik', 
+        desc: 'Kemikli kuzu incik, közlenmiş patlıcan beğendi, taze biberiye ve kırmızı şarap soslu demi-glace eşliğinde.', 
+        price: 440, 
+        img: 'images/menu_lamb.png', 
+        category: 'main' 
+      },
+
+      // 🍝 Pizza & Pasta
+      { 
+        id: 401, 
+        name: 'Taze Trüflü Tagliatelle', 
+        desc: 'El yapımı taze yumurtalı makarna, yabani mantarlar, krema, rendelenmiş siyah trüf ve taze parmesan.', 
+        price: 240, 
+        img: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?auto=format&fit=crop&w=400&q=80', 
+        category: 'pasta' 
+      },
+      { 
+        id: 2, 
+        name: 'Quattro Formaggi Pizza', 
+        desc: 'Taş fırında odun ateşinde pişmiş; mozzarella, gorgonzola, parmesan, ricotta ve kekikli domates sosu.', 
+        price: 260, 
+        img: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=400&q=80', 
+        category: 'pasta' 
+      },
+      { 
+        id: 8, 
+        name: 'Spicy Pepperoni Pizza', 
+        desc: 'İnce İtalyan hamurunda dana pepperoni dilimleri, acı yağ, jalapeno biberi, taze fesleğen ve mozzarella.', 
+        price: 240, 
+        img: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=400&q=80', 
+        category: 'pasta' 
+      },
+
+      // 🍔 Gourmet Burgers
+      { 
+        id: 1, 
+        name: 'Gourmet Truffle Burger', 
+        desc: '150g dana köftesi, karamelize soğan, trüf mayonezi, roka ve gouda peyniri briyoş ekmeğinde patates kızartması ile.', 
+        price: 240, 
+        img: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80', 
+        category: 'burger' 
+      },
+      { 
+        id: 6, 
+        name: 'Classic Cheeseburger', 
+        desc: '150g dana köftesi, cheddar peyniri, turşu, domates, marul ve özel burger sosu patates kızartması ile.', 
+        price: 210, 
+        img: 'https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80', 
+        category: 'burger' 
+      },
+      { 
+        id: 7, 
+        name: 'Crispy Sweet Chicken Burger', 
+        desc: 'Panelenmiş çıtır tavuk göğsü, ballı hardal sosu, kornişon turşu ve özel salata sosu ile yumuşak burger ekmeğinde.', 
+        price: 195, 
+        img: 'https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=400&q=80', 
+        category: 'burger' 
+      },
+
+      // 🍰 Handcrafted Desserts
+      { 
+        id: 3, 
+        name: 'San Sebastian Cheesecake', 
+        desc: 'İçi nemli, dışı karamelize yanık dokulu klasik Bask bölgesi cheesecake\'i, sıcak Belçika çikolatası eşliğinde.', 
+        price: 130, 
+        img: 'https://images.unsplash.com/photo-1508737027454-e6454ef45afd?auto=format&fit=crop&w=400&q=80', 
+        category: 'dessert' 
+      },
+      { 
+        id: 10, 
+        name: 'Artisan Espresso Tiramisu', 
+        desc: 'Kedidili bisküvileri, mascarpone peyniri dolgusu, sert espresso özütü ve taze kakao tozu serpintisiyle.', 
+        price: 110, 
+        img: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=400&q=80', 
+        category: 'dessert' 
+      },
+      { 
+        id: 501, 
+        name: 'Antep Fıstıklı Çıtır Baklava', 
+        desc: '4 dilim taze fıstıklı çıtır kuru baklava, Maraş sade kesme dondurması eşliğinde şık sunum.', 
+        price: 120, 
+        img: 'images/menu_baklava.png', 
+        category: 'dessert' 
+      },
+
+      // 🥤 Cold & Hot Drinks
+      { 
+        id: 4, 
+        name: 'Şeftalili & Naneli Buzlu Çay', 
+        desc: 'Taze şeftali püresi, demlenmiş siyah çay yaprakları ve taze nane dilimleriyle soğuk servis edilir.', 
+        price: 60, 
+        img: 'images/menu_iced_tea.png', 
+        category: 'drink' 
+      },
+      { 
+        id: 11, 
+        name: 'Ev Yapımı Çilekli Limonata', 
+        desc: 'Sıkma Bodrum limonları, taze çilek özütü, nane yaprakları ve kırık buz taneleriyle ferahlatıcı lezzet.', 
+        price: 65, 
+        img: 'images/menu_lemonade.png', 
+        category: 'drink' 
+      },
+      { 
+        id: 12, 
+        name: 'Coca-Cola Zero / Normal', 
+        desc: 'Kutuda soğuk servis edilir, limon dilimi eşliğinde.', 
+        price: 45, 
+        img: 'images/menu_coke.png', 
+        category: 'drink' 
+      },
+      { 
+        id: 601, 
+        name: 'Single Espresso', 
+        desc: '%100 Arabica çekirdeklerinden taze çekilmiş yoğun İtalyan espressosu.', 
+        price: 45, 
+        img: 'images/menu_espresso.png', 
+        category: 'drink' 
+      },
+      { 
+        id: 602, 
+        name: 'Geleneksel Türk Kahvesi', 
+        desc: 'Taze kavrulmuş çekirdeklerden bakır cezvede pişirilmiş kahve, çikolatalı lokum ve su ile servis edilir.', 
+        price: 40, 
+        img: 'images/menu_turkish_coffee.png', 
+        category: 'drink' 
+      },
+
+      // 🍟 Sides
+      { 
+        id: 5, 
+        name: 'Trüflü & Parmesanlı Patates', 
+        desc: 'Altın sarısı elma dilim patatesler, trüf yağı, rendelenmiş parmesan peyniri ve taze biberiye otu.', 
+        price: 95, 
+        img: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=400&q=80', 
+        category: 'burger' 
+      }
+    ];
+
+    // Local Storage setup
+    let products = JSON.parse(localStorage.getItem('latelier_products')) || defaultProducts;
+    
+    // Auto-migrate old Unsplash links for local drinks
+    products = products.map(p => {
+        const found = defaultProducts.find(dp => dp.id === p.id);
+        if (found && found.img.startsWith('images/')) {
+            p.img = found.img;
+        }
+        return p;
+    });
+    localStorage.setItem('latelier_products', JSON.stringify(products));
+
+    let ordersFeed = JSON.parse(localStorage.getItem('latelier_orders')) || [];
+    let cart = {}; 
+    let cartItemNotes = {}; 
+    let hasTriggeredUpsell = false;
+    let selectedBase64Image = '';
+
+    // Element handles
+    const btnModeCustomer = document.getElementById('btn-mode-customer');
+    const btnModeAdmin = document.getElementById('btn-mode-admin');
+    const secCustomerView = document.getElementById('sec-customer-view');
+    const secAdminView = document.getElementById('sec-admin-view');
+    
+    const itemsContainer = document.getElementById('menu-items-container');
+    const custCategoriesBar = document.getElementById('cust-categories-bar');
+    const cartCounter = document.getElementById('cart-counter');
+    const cartDrawer = document.getElementById('cart-drawer');
+    const backdrop = document.getElementById('backdrop');
+    const cartList = document.getElementById('cart-items-list');
+    const subtotalVal = document.getElementById('subtotal-val');
+    const totalVal = document.getElementById('total-val');
+    const upsellModal = document.getElementById('upsell-modal');
+    const orderNoteInput = document.getElementById('order-note');
+
+    const adminTableBody = document.getElementById('admin-table-body');
+    const adminOrdersFeed = document.getElementById('admin-orders-feed');
+    const addProdFile = document.getElementById('add-prod-file');
+    const addProdPreview = document.getElementById('add-prod-preview');
+    const feedEmptyMsg = document.getElementById('feed-empty-msg');
+
+    // ==========================================================================
+    // NAVIGATION PORTAL MODES SWITCH
+    // ==========================================================================
+    btnModeCustomer.addEventListener('click', () => {
+      btnModeCustomer.classList.add('active');
+      btnModeAdmin.classList.remove('active');
+      secCustomerView.classList.add('active');
+      secAdminView.classList.remove('active');
+      renderCustomerCategories();
+      renderCustomerMenu();
+    });
+
+    btnModeAdmin.addEventListener('click', () => {
+      btnModeAdmin.classList.add('active');
+      btnModeCustomer.classList.remove('active');
+      secAdminView.classList.add('active');
+      secCustomerView.classList.remove('active');
+      renderAdminProductsTable();
+      renderAdminOrdersFeed();
+    });
+
+    // ==========================================================================
+    // CUSTOMER MENU FUNCTIONS
+    // ==========================================================================
+    const categoryTitles = {
+      all: 'Tümü',
+      starter: '🥗 Başlangıçlar',
+      main: '🥩 Ana Yemekler',
+      pasta: '🍝 Pizza & Makarna',
+      burger: '🍔 Gurme Burgerler',
+      dessert: '🍰 Tatlılar',
+      drink: '🥤 İçecekler'
+    };
+
+    function renderCustomerCategories() {
+      custCategoriesBar.innerHTML = '';
+      const uniqueCats = ['all', ...new Set(products.map(p => p.category))];
+      
+      uniqueCats.forEach((cat, idx) => {
+        const chip = document.createElement('div');
+        chip.className = `category-chip ${idx === 0 ? 'active' : ''}`;
+        chip.dataset.cat = cat;
+        chip.textContent = categoryTitles[cat] || cat;
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          renderCustomerMenu(cat);
+        });
+        custCategoriesBar.appendChild(chip);
+      });
+    }
+
+    function renderCustomerMenu(category = 'all') {
+      itemsContainer.innerHTML = '';
+      const filtered = category === 'all' ? products : products.filter(p => p.category === category);
+      
+      if (filtered.length === 0) {
+        itemsContainer.innerHTML = `<div style="text-align:center; padding:40px; color:var(--text-muted)">Bu kategoride henüz ürün eklenmemiş.</div>`;
+        return;
+      }
+
+      filtered.forEach(p => {
+        const qty = cart[p.id] || 0;
+        const card = document.createElement('div');
+        card.className = 'menu-card';
+        card.innerHTML = `
+          <div class="menu-visual-wrapper">
+            <img src="${p.img}" alt="${p.name}" loading="lazy">
+          </div>
+          <div class="menu-details">
+            <div class="menu-header-row">
+              <span class="menu-title">${p.name}</span>
+              <span class="menu-price">${p.price} ₺</span>
+            </div>
+            <div class="menu-desc">${p.desc}</div>
+            <div class="menu-action-row">
+              <div class="quantity-control">
+                <button class="quantity-btn" onclick="adjustQty(${p.id}, -1)"><i data-feather="minus" style="width:12px; height:12px;"></i></button>
+                <span class="quantity-val" id="qty-val-${p.id}">${qty}</span>
+                <button class="quantity-btn" onclick="adjustQty(${p.id}, 1)"><i data-feather="plus" style="width:12px; height:12px;"></i></button>
+              </div>
+              <button class="add-btn" onclick="addToCart(${p.id})">Ekle</button>
+            </div>
+          </div>
+        `;
+        itemsContainer.appendChild(card);
+      });
+      if (typeof feather !== 'undefined') feather.replace();
+    }
+
+    window.adjustQty = function(id, change) {
+      let current = cart[id] || 0;
+      current = Math.max(0, current + change);
+      
+      if (current === 0) {
+        delete cart[id];
+        delete cartItemNotes[id];
+      } else {
+        cart[id] = current;
+      }
+      
+      const qtyEl = document.getElementById(`qty-val-${id}`);
+      if (qtyEl) qtyEl.textContent = current;
+      
+      updateCartUI();
+    }
+
+    window.addToCart = function(id) {
+      let current = cart[id] || 0;
+      if (current === 0) {
+        cart[id] = 1;
+        const qtyEl = document.getElementById(`qty-val-${id}`);
+        if (qtyEl) qtyEl.textContent = 1;
+      }
+      
+      const prod = products.find(p => p.id === id);
+      updateCartUI();
+      showNotification(`${prod.name} sepetinize güncellendi.`);
+
+      if (id === 1 && !hasTriggeredUpsell) {
+        setTimeout(() => {
+          upsellModal.style.display = 'flex';
+        }, 600);
+      }
+    }
+
+    window.updateItemNote = function(id, value) {
+      cartItemNotes[id] = value;
+    }
+
+    function updateCartUI() {
+      let totalQty = 0;
+      let totalSum = 0;
+      cartList.innerHTML = '';
+      
+      Object.keys(cart).forEach(id => {
+        const prod = products.find(p => p.id == id);
+        if (!prod) return;
+        const qty = cart[id];
+        totalQty += qty;
+        totalSum += (prod.price * qty);
+        
+        const noteValue = cartItemNotes[id] || '';
+        
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+          <div class="cart-item-row-top">
+            <div class="cart-item-info">
+              <span class="cart-item-name">${prod.name}</span>
+              <span class="cart-item-qty">${qty} adet x ${prod.price} ₺</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span class="cart-item-price">${prod.price * qty} ₺</span>
+              <button onclick="removeProduct(${prod.id})" style="background:none; border:none; color:var(--red); cursor:pointer;">
+                <i data-feather="trash-2" style="width:14px; height:14px;"></i>
+              </button>
+            </div>
+          </div>
+          <div class="cart-item-note-row">
+            <i data-feather="edit-3" style="width:11px; height:11px; color:var(--accent);"></i>
+            <input type="text" class="cart-item-note-input" placeholder="Malzeme çıkarma, pişme derecesi notu..." onchange="updateItemNote(${prod.id}, this.value)" value="${noteValue}">
+          </div>
+        `;
+        cartList.appendChild(div);
+      });
+      
+      cartCounter.textContent = totalQty;
+      subtotalVal.textContent = `${totalSum} ₺`;
+      totalVal.textContent = `${totalSum} ₺`;
+      if (typeof feather !== 'undefined') feather.replace();
+    }
+
+    window.removeProduct = function(id) {
+      delete cart[id];
+      delete cartItemNotes[id];
+      const qtyEl = document.getElementById(`qty-val-${id}`);
+      if (qtyEl) qtyEl.textContent = 0;
+      updateCartUI();
+    }
+
+    function showNotification(text) {
+      const banner = document.getElementById('notification');
+      const bannerText = document.getElementById('notification-text');
+      bannerText.textContent = text;
+      banner.classList.add('show');
+      setTimeout(() => {
+        banner.classList.remove('show');
+      }, 2500);
+    }
+
+    document.getElementById('cart-trigger-btn').addEventListener('click', () => {
+      cartDrawer.classList.add('open');
+      backdrop.style.display = 'block';
+    });
+    document.getElementById('cart-close-btn').addEventListener('click', closeCart);
+    backdrop.addEventListener('click', closeCart);
+
+    function closeCart() {
+      cartDrawer.classList.remove('open');
+      backdrop.style.display = 'none';
+    }
+
+    document.getElementById('upsell-decline').addEventListener('click', () => {
+      upsellModal.style.display = 'none';
+      hasTriggeredUpsell = true;
+    });
+
+    document.getElementById('upsell-accept').addEventListener('click', () => {
+      upsellModal.style.display = 'none';
+      hasTriggeredUpsell = true;
+      
+      cart[5] = (cart[5] || 0) + 1; 
+      cart[11] = (cart[11] || 0) + 1; 
+      
+      updateCartUI();
+      renderCustomerMenu(); 
+      showNotification('AI Menü ikramları sepetinize başarıyla eklendi!');
+    });
+
+    // Mutfak Sipariş Gönder (Admin Panele Gönderme Simülasyonu)
+    document.getElementById('send-order-btn').addEventListener('click', () => {
+      if (Object.keys(cart).length === 0) {
+        showNotification('Sepetiniz boş.');
+        return;
+      }
+      
+      // Sipariş detaylarını topla
+      let orderItemsStr = [];
+      let totalAmount = 0;
+      Object.keys(cart).forEach(id => {
+        const prod = products.find(p => p.id == id);
+        const qty = cart[id];
+        const note = cartItemNotes[id] || '';
+        if (prod) {
+          totalAmount += (prod.price * qty);
+          const noteText = note ? ` (Özel İstek: "${note}")` : '';
+          orderItemsStr.push(`${qty}x ${prod.name}${noteText}`);
+        }
+      });
+
+      const globalNote = orderNoteInput.value.trim();
+      
+      // Sipariş Objesi
+      const newOrder = {
+        id: Date.now(),
+        type: 'order',
+        table: 'Masa 04',
+        details: orderItemsStr.join(', '),
+        note: globalNote,
+        total: totalAmount,
+        time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+        completed: false
+      };
+
+      ordersFeed.unshift(newOrder);
+      localStorage.setItem('latelier_orders', JSON.stringify(ordersFeed));
+
+      closeCart();
+      showNotification('Siparişiniz mutfağa iletildi! Hazırlanıyor...');
+      
+      // Reset cart
+      cart = {};
+      cartItemNotes = {};
+      orderNoteInput.value = '';
+      updateCartUI();
+      renderCustomerMenu();
+    });
+
+    // Garson ve Hesap Çağrıları (Admin Panele Canlı Düşer)
+    document.getElementById('btn-call-waiter').addEventListener('click', () => {
+      const newAlert = {
+        id: Date.now(),
+        type: 'alert',
+        table: 'Masa 04',
+        details: 'Garson Çağrısı 🔔',
+        note: 'Müşteri masaya personel çağırıyor.',
+        total: 0,
+        time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+        completed: false
+      };
+      ordersFeed.unshift(newAlert);
+      localStorage.setItem('latelier_orders', JSON.stringify(ordersFeed));
+      showNotification('Servis görevlisi çağrıldı (Masa 04).');
+    });
+
+    document.getElementById('btn-request-bill').addEventListener('click', () => {
+      const newAlert = {
+        id: Date.now(),
+        type: 'alert',
+        table: 'Masa 04',
+        details: 'Hesap Talebi 💳',
+        note: 'Masa hesabı kapatmak istiyor (POS / Nakit).',
+        total: 0,
+        time: new Date().toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' }),
+        completed: false
+      };
+      ordersFeed.unshift(newAlert);
+      localStorage.setItem('latelier_orders', JSON.stringify(ordersFeed));
+      showNotification('Hesap talebiniz iletildi. POS hazırlanıyor.');
+    });
+
+
+    // ==========================================================================
+    // OWNER ADMIN PANEL MANAGEMENT FUNCTIONS
+    // ==========================================================================
+    
+    // File upload file reader logic
+    addProdFile.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          selectedBase64Image = evt.target.result;
+          addProdPreview.style.display = 'flex';
+          addProdPreview.querySelector('img').src = selectedBase64Image;
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Handle form submit (Add new product)
+    document.getElementById('admin-add-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('add-prod-name').value.trim();
+      const cat = document.getElementById('add-prod-category').value;
+      const price = parseFloat(document.getElementById('add-prod-price').value);
+      const desc = document.getElementById('add-prod-desc').value.trim();
+      
+      // Use fallback food placeholder if no image was uploaded
+      const finalImage = selectedBase64Image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80';
+
+      const newProduct = {
+        id: Date.now(),
+        name: name,
+        desc: desc,
+        price: price,
+        img: finalImage,
+        category: cat
+      };
+
+      products.push(newProduct);
+      localStorage.setItem('latelier_products', JSON.stringify(products));
+
+      // Reset Form & Preview variables
+      document.getElementById('admin-add-form').reset();
+      addProdPreview.style.display = 'none';
+      selectedBase64Image = '';
+
+      showNotification('Yeni ürün başarıyla eklendi ve menüye yüklendi.');
+      renderAdminProductsTable();
+    });
+
+    // Delete Product
+    window.deleteProduct = function(id) {
+      products = products.filter(p => p.id !== id);
+      localStorage.setItem('latelier_products', JSON.stringify(products));
+      renderAdminProductsTable();
+      showNotification('Ürün menüden kaldırıldı.');
+    }
+
+    // Render Admin Products Management Table
+    function renderAdminProductsTable() {
+      adminTableBody.innerHTML = '';
+      products.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img src="${p.img}" class="table-prod-img" alt="${p.name}"></td>
+          <td style="font-weight: 700; color: var(--white);">${p.name}</td>
+          <td><span style="font-size:0.75rem; background:rgba(255,255,255,0.03); padding:4px 8px; border-radius:4px; border:1px solid var(--border);">${categoryTitles[p.category] || p.category}</span></td>
+          <td style="font-family: var(--font-serif); color: var(--accent); font-weight:700;">${p.price} ₺</td>
+          <td>
+            <button class="table-action-btn" onclick="deleteProduct(${p.id})" title="Ürünü Sil"><i data-feather="trash-2" style="width:14px; height:14px;"></i></button>
+          </td>
+        `;
+        adminTableBody.appendChild(tr);
+      });
+      if (typeof feather !== 'undefined') feather.replace();
+    }
+
+    // Render Incoming Orders & Call Feed alerts
+    function renderAdminOrdersFeed() {
+      // Clear all feed items except default empty message
+      const existingFeedItems = adminOrdersFeed.querySelectorAll('.feed-item');
+      existingFeedItems.forEach(el => el.remove());
+
+      if (ordersFeed.length === 0) {
+        feedEmptyMsg.style.display = 'block';
+        return;
+      }
+      feedEmptyMsg.style.display = 'none';
+
+      ordersFeed.forEach(order => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = `feed-item ${order.type === 'alert' ? 'call-alert' : ''} ${order.completed ? 'completed' : ''}`;
+        
+        let headerText = `${order.table} - ${order.type === 'order' ? 'Yemek Siparişi 🍽️' : order.details}`;
+        let detailsText = order.type === 'order' ? `<strong>Sipariş Detayı:</strong> ${order.details}` : order.note;
+        let noteMarkup = (order.type === 'order' && order.note) ? `<div style="margin-top:6px; color:var(--accent);"><strong>Masa Notu:</strong> "${order.note}"</div>` : '';
+        let totalMarkup = order.total > 0 ? `<div style="margin-top:6px; font-weight:800; color:var(--white);">Toplam Tutar: ${order.total} ₺</div>` : '';
+        
+        itemDiv.innerHTML = `
+          <div class="feed-details">
+            <h4>${headerText}</h4>
+            <p>${detailsText}</p>
+            ${noteMarkup}
+            ${totalMarkup}
+            <span class="feed-time">${order.time}</span>
+          </div>
+          <div class="feed-actions">
+            ${!order.completed ? `<button class="feed-btn" onclick="completeOrderAlert(${order.id})">Kapat / Tamamla</button>` : `<span style="font-size:0.7rem; color:var(--text-muted); font-weight:700;">TAMAMLANDI</span>`}
+            <button class="feed-btn decline" onclick="deleteOrderAlert(${order.id})">Sil</button>
+          </div>
+        `;
+        adminOrdersFeed.appendChild(itemDiv);
+      });
+      if (typeof feather !== 'undefined') feather.replace();
+    }
+
+    window.completeOrderAlert = function(id) {
+      const order = ordersFeed.find(o => o.id === id);
+      if (order) {
+        order.completed = true;
+        localStorage.setItem('latelier_orders', JSON.stringify(ordersFeed));
+        renderAdminOrdersFeed();
+        showNotification('Sipariş/Aktivite tamamlandı olarak işaretlendi.');
+      }
+    }
+
+    window.deleteOrderAlert = function(id) {
+      ordersFeed = ordersFeed.filter(o => o.id !== id);
+      localStorage.setItem('latelier_orders', JSON.stringify(ordersFeed));
+      renderAdminOrdersFeed();
+      showNotification('Sipariş/Çağrı kaydı arşivden silindi.');
+    }
+
+    // Initialize View initially
+    renderCustomerCategories();
+    renderCustomerMenu();
+    feather.replace();
+  </script>
+</body>
+</html>

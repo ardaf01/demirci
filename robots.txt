@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://arfcode.com/sitemap.xml
